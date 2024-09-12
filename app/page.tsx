@@ -10,6 +10,7 @@ export default function Home() {
   const darkMode = useSettings((state) => state.darkMode);
   const [counts, setCounts] = useState<{ id: string; name: string; count: number; number: string; }[]>([]);
   const [title, setTitle] = useState("");
+  const [total, setTotal] = useState(0);
 
   const COUNTS_URL = '/api/count';
   const TITLE_URL = '/api/count/title';
@@ -29,9 +30,23 @@ export default function Home() {
     }
   }
 
+  const calcTotalMoney = () => {
+    let t = 0;
+    
+    counts.forEach((item) => {
+      t += item.count;
+    });
+    t *= 10;
+    setTotal(t);
+  }
+
   useEffect(() => {
     fetchData();
   }, []);
+
+  useEffect(() => {
+    calcTotalMoney();
+  }, [counts]);
 
   useEffect(() => {
     if (darkMode) document.documentElement.classList.add('dark');
@@ -48,6 +63,10 @@ export default function Home() {
               <CountCard id={index.id} name={index.name} value={index.count} number={index.number} />
             </div>
           ))}
+          <div className="text-xl pt-8">
+            <p>10월 1일 납부하실 금액</p>
+            <p>{total}원</p>
+          </div>
         </div>
       </div>
     </div>
