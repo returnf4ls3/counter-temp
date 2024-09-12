@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import useSettings from "./hooks/useSettings";
-import { getCountsFromDb } from "./actions/getCounts";
 import axios from "axios";
 import { CountCard } from "./components/CountCard";
 
@@ -34,9 +33,8 @@ export default function Home() {
     let t = 0;
     
     counts.forEach((item) => {
-      t += item.count;
+      t += ((item.count) * 10);
     });
-    t *= 10;
     setTotal(t);
   }
 
