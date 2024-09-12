@@ -11,27 +11,25 @@ export default function Home() {
   const [counts, setCounts] = useState<{ id: string; name: string; count: number; number: string; }[]>([]);
   const [title, setTitle] = useState("");
 
-  async function getData() {
-    const data = await axios.get('/api/count');
-    return data;
+  const COUNTS_URL = '/api/count';
+  const TITLE_URL = '/api/count/title';
+
+  async function fetchData() {
+    try {
+      const [countsResponse, titleResponse] = await Promise.all([
+        axios.get(COUNTS_URL),
+        axios.get(TITLE_URL)
+      ]);
+
+      const filteredCounts = countsResponse.data.filter((index: any) => index.number !== 'title');
+      setCounts(filteredCounts);
+      setTitle(titleResponse.data.name);
+    } catch (error) {
+      console.error("Failed to fetch data:", error);
+    }
   }
 
   useEffect(() => {
-    async function fetchData() {
-      const data = (await getData()).data;
-      setCounts(data)
-
-      const editedData = data.filter((index: any) => index.number !== 'title');
-      setCounts(editedData);
-    }
-    fetchData();
-  }, []);
-
-  useEffect(() => {
-    async function fetchData() {
-      const apiTitle = (await axios.get('/api/count/title')).data;
-      setTitle(apiTitle.name)
-    }
     fetchData();
   }, []);
 
